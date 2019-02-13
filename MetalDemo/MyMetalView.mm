@@ -8,6 +8,7 @@
 
 #import "MyMetalView.h"
 #import <Metal/Metal.h>
+#import "MyShaderTypes.h"
 
 @interface MyMetalView ()
 
@@ -23,6 +24,15 @@
  一个管理队列，由 Device 创建。它持有一串需要被执行的 Command Buffer， Command Buffer 由 Command Queue 创建，它又包含多个特定的 Command Encoder 。
  */
 @property (strong, nonatomic) id <MTLCommandQueue> commandQueue;
+
+
+
+/**
+ MTLRenderPipelineState 对渲染管线的描述。它的具体配置需要依赖 MTLRenderPipelineDescriptor 对象来完成。
+ */
+@property (strong, nonatomic) id <MTLRenderPipelineState> pipelineState;
+
+
 @end
 
 @implementation MyMetalView
@@ -33,6 +43,19 @@
         _device = MTLCreateSystemDefaultDevice();
         if (_device) {
             _commandQueue = [_device newCommandQueue];
+            /**
+             Metal着色器文件 *.metal 在工程编译的时候就被编译成 .metallib 文件，打包进App中
+             MTLLibrary 对象是对 编译后的metal文件 metallib 的抽象。通过 newDefaultLibrary 方法返回工程中默认的 library
+             */
+            id <MTLLibrary> library = [_device newDefaultLibrary];
+            id <MTLFunction> vertexFunction = [library newFunctionWithName:@"vertexShader"];
+            id <MTLFunction> fragmentFunction = [library newFunctionWithName:@"fragmentShader"];
+            // 对渲染管线的描述，用这个描述来创建MTLRenderPipelineState
+            MTLRenderPipelineDescriptor* pipelineDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+            pipelineDescriptor.vertexFunction = vertexFunction;
+            pipelineDescriptor.fragmentFunction = fragmentFunction;
+            pipelineDescriptor.colorAttachments[0].pixelFormat = [[self metalLayer] pixelFormat];
+            _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineDescriptor error:nil];
         }
     }
     return self;
@@ -57,13 +80,18 @@
 }
 
 
+- (CAMetalLayer*) metalLayer {
+    return (CAMetalLayer*)self.layer;
+}
+
+
 - (void) render {
     
     /**
      CAMetalLayer: 负责渲染，继承自CALayer，由Metal进行渲染
      CAMetalDrawable 协议是 Core Animation 中定义的，它表示某个对象是可被显示的资源。它继承自 MTLDrawable，并扩展了一个实现 MTLTexture 协议的 texture 对象，这个 texture 用来表示渲染指令执行的目标。即之后的渲染操作，会画在这个 texture 上。
      */
-    id <CAMetalDrawable> drawable = [(CAMetalLayer*)self.layer nextDrawable];
+    id <CAMetalDrawable> drawable = [[self metalLayer] nextDrawable];
     
     
     if (drawable) {
@@ -100,6 +128,23 @@
          */
         id <MTLCommandBuffer> commandBuffer = _commandQueue.commandBuffer;
         id <MTLRenderCommandEncoder> commandEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescripor];
+        
+        
+        //把渲染管线和commandEncoder关联起来，表示commandEncoder的指令要作用到哪个渲染管线上
+        [commandEncoder setRenderPipelineState:_pipelineState];
+        
+        //三角形顶点
+        MyVertex vertices[3] = {
+            {.position = vector2(0.5f, -0.5f),  .color = vector4(1.0f, 0.0f, 0.0f, 1.0f)},
+            {.position = vector2(-0.5f, -0.5f), .color = vector4(0.0f, 1.0f, 0.0f, 1.0f)},
+            {.position = vector2(0.0f, 0.5f),   .color = vector4(0.0f, 0.0f, 1.0f, 1.0f)}
+        };
+        
+        //传递顶点数据
+        [commandEncoder setVertexBytes:vertices length:sizeof(MyVertex) * 3 atIndex:MyVertexInputIndexVertices];
+        //画三角形
+        [commandEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
+        
         
         //当当前 Command Encoder 配置完毕，调用 endEncoding
         [commandEncoder endEncoding];

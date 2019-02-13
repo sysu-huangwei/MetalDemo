@@ -13,8 +13,9 @@
 		C53B00172213FE4600C9EFBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C53B00162213FE4600C9EFBE /* Assets.xcassets */; };
 		C53B001A2213FE4600C9EFBE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C53B00182213FE4600C9EFBE /* LaunchScreen.storyboard */; };
 		C53B001D2213FE4600C9EFBE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C53B001C2213FE4600C9EFBE /* main.m */; };
-		C53B00252214012200C9EFBE /* MyMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = C53B00242214012200C9EFBE /* MyMetalView.m */; };
+		C53B00252214012200C9EFBE /* MyMetalView.mm in Sources */ = {isa = PBXBuildFile; fileRef = C53B00242214012200C9EFBE /* MyMetalView.mm */; };
 		C53B00282214124500C9EFBE /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53B00272214124500C9EFBE /* Metal.framework */; };
+		C53B002B22141EE600C9EFBE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = C53B002A22141EE600C9EFBE /* Shaders.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,8 +30,10 @@
 		C53B001B2213FE4600C9EFBE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C53B001C2213FE4600C9EFBE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C53B00232214012200C9EFBE /* MyMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyMetalView.h; sourceTree = "<group>"; };
-		C53B00242214012200C9EFBE /* MyMetalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyMetalView.m; sourceTree = "<group>"; };
+		C53B00242214012200C9EFBE /* MyMetalView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MyMetalView.mm; sourceTree = "<group>"; };
 		C53B00272214124500C9EFBE /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		C53B002922141B7100C9EFBE /* MyShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyShaderTypes.h; sourceTree = "<group>"; };
+		C53B002A22141EE600C9EFBE /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +68,7 @@
 		C53B000C2213FE4400C9EFBE /* MetalDemo */ = {
 			isa = PBXGroup;
 			children = (
+				C53B002A22141EE600C9EFBE /* Shaders.metal */,
 				C53B000D2213FE4400C9EFBE /* AppDelegate.h */,
 				C53B000E2213FE4400C9EFBE /* AppDelegate.m */,
 				C53B00102213FE4400C9EFBE /* ViewController.h */,
@@ -75,7 +79,8 @@
 				C53B001B2213FE4600C9EFBE /* Info.plist */,
 				C53B001C2213FE4600C9EFBE /* main.m */,
 				C53B00232214012200C9EFBE /* MyMetalView.h */,
-				C53B00242214012200C9EFBE /* MyMetalView.m */,
+				C53B00242214012200C9EFBE /* MyMetalView.mm */,
+				C53B002922141B7100C9EFBE /* MyShaderTypes.h */,
 			);
 			path = MetalDemo;
 			sourceTree = "<group>";
@@ -158,10 +163,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C53B00252214012200C9EFBE /* MyMetalView.m in Sources */,
+				C53B00252214012200C9EFBE /* MyMetalView.mm in Sources */,
 				C53B00122213FE4500C9EFBE /* ViewController.m in Sources */,
 				C53B001D2213FE4600C9EFBE /* main.m in Sources */,
 				C53B000F2213FE4400C9EFBE /* AppDelegate.m in Sources */,
+				C53B002B22141EE600C9EFBE /* Shaders.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
