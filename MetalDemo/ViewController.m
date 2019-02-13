@@ -7,9 +7,10 @@
 //
 
 #import "ViewController.h"
+#import "MyMetalView.h"
 
 @interface ViewController ()
-
+@property (strong, nonatomic) MyMetalView* metalView;
 @end
 
 @implementation ViewController
@@ -17,6 +18,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    _metalView = [[MyMetalView alloc] initWithFrame:self.view.frame];
+    [self.view addSubview:_metalView];
+    
 }
 
 

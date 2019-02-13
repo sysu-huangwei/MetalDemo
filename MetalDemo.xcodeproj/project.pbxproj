@@ -13,6 +13,8 @@
 		C53B00172213FE4600C9EFBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C53B00162213FE4600C9EFBE /* Assets.xcassets */; };
 		C53B001A2213FE4600C9EFBE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C53B00182213FE4600C9EFBE /* LaunchScreen.storyboard */; };
 		C53B001D2213FE4600C9EFBE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C53B001C2213FE4600C9EFBE /* main.m */; };
+		C53B00252214012200C9EFBE /* MyMetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = C53B00242214012200C9EFBE /* MyMetalView.m */; };
+		C53B00282214124500C9EFBE /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53B00272214124500C9EFBE /* Metal.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,9 @@
 		C53B00192213FE4600C9EFBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C53B001B2213FE4600C9EFBE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C53B001C2213FE4600C9EFBE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C53B00232214012200C9EFBE /* MyMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyMetalView.h; sourceTree = "<group>"; };
+		C53B00242214012200C9EFBE /* MyMetalView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyMetalView.m; sourceTree = "<group>"; };
+		C53B00272214124500C9EFBE /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C53B00282214124500C9EFBE /* Metal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +50,7 @@
 			children = (
 				C53B000C2213FE4400C9EFBE /* MetalDemo */,
 				C53B000B2213FE4400C9EFBE /* Products */,
+				C53B00262214124500C9EFBE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,8 +74,18 @@
 				C53B00182213FE4600C9EFBE /* LaunchScreen.storyboard */,
 				C53B001B2213FE4600C9EFBE /* Info.plist */,
 				C53B001C2213FE4600C9EFBE /* main.m */,
+				C53B00232214012200C9EFBE /* MyMetalView.h */,
+				C53B00242214012200C9EFBE /* MyMetalView.m */,
 			);
 			path = MetalDemo;
+			sourceTree = "<group>";
+		};
+		C53B00262214124500C9EFBE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C53B00272214124500C9EFBE /* Metal.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +158,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C53B00252214012200C9EFBE /* MyMetalView.m in Sources */,
 				C53B00122213FE4500C9EFBE /* ViewController.m in Sources */,
 				C53B001D2213FE4600C9EFBE /* main.m in Sources */,
 				C53B000F2213FE4400C9EFBE /* AppDelegate.m in Sources */,
@@ -288,6 +306,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 68A6PPJ4F3;
 				INFOPLIST_FILE = MetalDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,6 +324,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 68A6PPJ4F3;
 				INFOPLIST_FILE = MetalDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
