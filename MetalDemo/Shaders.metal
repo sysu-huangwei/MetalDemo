@@ -14,7 +14,7 @@ using namespace metal;
 typedef struct
 {
     float4 position [[position]];
-    float4 color;
+    float2 texCoords;
 } RasterizerData;
 
 
@@ -26,7 +26,7 @@ vertex RasterizerData vertexShader(constant MyVertex *vertices [[buffer(MyVertex
     RasterizerData outVertex;
     
     outVertex.position = vector_float4(vertices[vid].position, 0.0, 1.0);
-    outVertex.color = vertices[vid].color;
+    outVertex.texCoords = vertices[vid].textureCoordinate;
     
     return outVertex;
 }
@@ -35,6 +35,9 @@ vertex RasterizerData vertexShader(constant MyVertex *vertices [[buffer(MyVertex
 /**
  片段着色器
  */
-fragment float4 fragmentShader(RasterizerData inVertex [[stage_in]]) {
-    return inVertex.color;
+fragment float4 fragmentShader(RasterizerData inVertex [[stage_in]],
+                               texture2d<float> tex2d [[texture(MyTextureIndexBaseColor)]]) {
+    constexpr sampler textureSampler (mag_filter::linear,
+                                      min_filter::linear);
+    return float4(tex2d.sample(textureSampler, inVertex.texCoords));
 }

@@ -16,6 +16,7 @@
 		C53B00252214012200C9EFBE /* MyMetalView.mm in Sources */ = {isa = PBXBuildFile; fileRef = C53B00242214012200C9EFBE /* MyMetalView.mm */; };
 		C53B00282214124500C9EFBE /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53B00272214124500C9EFBE /* Metal.framework */; };
 		C53B002B22141EE600C9EFBE /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = C53B002A22141EE600C9EFBE /* Shaders.metal */; };
+		C53B002F221540A300C9EFBE /* dog.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C53B002E221540A300C9EFBE /* dog.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		C53B00272214124500C9EFBE /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		C53B002922141B7100C9EFBE /* MyShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyShaderTypes.h; sourceTree = "<group>"; };
 		C53B002A22141EE600C9EFBE /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		C53B002E221540A300C9EFBE /* dog.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = dog.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 				C53B00232214012200C9EFBE /* MyMetalView.h */,
 				C53B00242214012200C9EFBE /* MyMetalView.mm */,
 				C53B002922141B7100C9EFBE /* MyShaderTypes.h */,
+				C53B002E221540A300C9EFBE /* dog.jpg */,
 			);
 			path = MetalDemo;
 			sourceTree = "<group>";
@@ -150,6 +153,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C53B002F221540A300C9EFBE /* dog.jpg in Resources */,
 				C53B001A2213FE4600C9EFBE /* LaunchScreen.storyboard in Resources */,
 				C53B00172213FE4600C9EFBE /* Assets.xcassets in Resources */,
 				C53B00152213FE4500C9EFBE /* Main.storyboard in Resources */,

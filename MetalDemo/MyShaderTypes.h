@@ -20,7 +20,7 @@
 typedef struct
 {
     vector_float2 position;
-    vector_float4 color;
+    vector_float2 textureCoordinate;
 } MyVertex;
 
 
@@ -29,5 +29,10 @@ typedef enum MyVertexInputIndex
     MyVertexInputIndexVertices = 0,
     MyVertexInputIndexCount    = 1,
 } MyVertexInputIndex;
+
+typedef enum MyTextureIndex
+{
+    MyTextureIndexBaseColor = 0,
+} MyTextureIndex;
 
 #endif /* MyShaderTypes_h */

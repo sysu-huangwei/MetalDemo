@@ -33,6 +33,18 @@
 @property (strong, nonatomic) id <MTLRenderPipelineState> pipelineState;
 
 
+
+/**
+ MTLBuffer，可以理解成一个 CPU 和 GPU 都可以访问的内存块，它里面存储的数据，是没有格式、类型限制的，即可以存储任意类型的数据。
+ */
+@property (strong, nonatomic) id <MTLBuffer> vertexBuffer;
+
+
+/**
+ 纹理对象
+ */
+@property (strong, nonatomic) id <MTLTexture> texture;
+
 @end
 
 @implementation MyMetalView
@@ -43,22 +55,59 @@
         _device = MTLCreateSystemDefaultDevice();
         if (_device) {
             _commandQueue = [_device newCommandQueue];
-            /**
-             Metal着色器文件 *.metal 在工程编译的时候就被编译成 .metallib 文件，打包进App中
-             MTLLibrary 对象是对 编译后的metal文件 metallib 的抽象。通过 newDefaultLibrary 方法返回工程中默认的 library
-             */
-            id <MTLLibrary> library = [_device newDefaultLibrary];
-            id <MTLFunction> vertexFunction = [library newFunctionWithName:@"vertexShader"];
-            id <MTLFunction> fragmentFunction = [library newFunctionWithName:@"fragmentShader"];
-            // 对渲染管线的描述，用这个描述来创建MTLRenderPipelineState
-            MTLRenderPipelineDescriptor* pipelineDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
-            pipelineDescriptor.vertexFunction = vertexFunction;
-            pipelineDescriptor.fragmentFunction = fragmentFunction;
-            pipelineDescriptor.colorAttachments[0].pixelFormat = [[self metalLayer] pixelFormat];
-            _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineDescriptor error:nil];
+            [self setupPipeline];
+            [self setupBuffer];
+            [self setupTexture];
         }
     }
     return self;
+}
+
+
+
+/**
+ 初始化渲染管线
+ */
+- (void) setupPipeline {
+    /**
+     Metal着色器文件 *.metal 在工程编译的时候就被编译成 .metallib 文件，打包进App中
+     MTLLibrary 对象是对 编译后的metal文件 metallib 的抽象。通过 newDefaultLibrary 方法返回工程中默认的 library
+     */
+    id <MTLLibrary> library = [_device newDefaultLibrary];
+    id <MTLFunction> vertexFunction = [library newFunctionWithName:@"vertexShader"];
+    id <MTLFunction> fragmentFunction = [library newFunctionWithName:@"fragmentShader"];
+    // 对渲染管线的描述，用这个描述来创建MTLRenderPipelineState
+    MTLRenderPipelineDescriptor* pipelineDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+    pipelineDescriptor.vertexFunction = vertexFunction;
+    pipelineDescriptor.fragmentFunction = fragmentFunction;
+    pipelineDescriptor.colorAttachments[0].pixelFormat = [[self metalLayer] pixelFormat];
+    _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineDescriptor error:nil];
+}
+
+
+/**
+ 初始化顶点数据
+ */
+- (void) setupBuffer {
+    //矩形顶点
+    MyVertex vertices[4] = {
+        {.position = vector2(-1.0f, -1.0f),  .textureCoordinate = vector2(0.0f, 1.0f)},
+        {.position = vector2(-1.0f, 1.0f),   .textureCoordinate = vector2(0.0f, 0.0f)},
+        {.position = vector2(1.0f, -1.0f),   .textureCoordinate = vector2(1.0f, 1.0f)},
+        {.position = vector2(1.0f, 1.0f),    .textureCoordinate = vector2(1.0f, 0.0f)}
+    };
+    //创建顶点数据  MTLResourceCPUCacheModeWriteCombined:它会优化资源，使得 CPU 只能写入，但是不能读取数据。这比较适合我们的渲染操作：一般 CPU 都只负责提交数据，然后 GPU 读取处理，一般 CPU 不会再直接读取这部分数据。
+    _vertexBuffer = [_device newBufferWithBytes:vertices length:sizeof(MyVertex) * 4 options:MTLResourceCPUCacheModeWriteCombined];
+}
+
+
+
+/**
+ 初始化纹理
+ */
+- (void) setupTexture {
+    UIImage* image = [UIImage imageNamed:@"dog.jpg"];
+    _texture = [self newTextureWithImage:image];
 }
 
 
@@ -133,17 +182,13 @@
         //把渲染管线和commandEncoder关联起来，表示commandEncoder的指令要作用到哪个渲染管线上
         [commandEncoder setRenderPipelineState:_pipelineState];
         
-        //三角形顶点
-        MyVertex vertices[3] = {
-            {.position = vector2(0.5f, -0.5f),  .color = vector4(1.0f, 0.0f, 0.0f, 1.0f)},
-            {.position = vector2(-0.5f, -0.5f), .color = vector4(0.0f, 1.0f, 0.0f, 1.0f)},
-            {.position = vector2(0.0f, 0.5f),   .color = vector4(0.0f, 0.0f, 1.0f, 1.0f)}
-        };
         
         //传递顶点数据
-        [commandEncoder setVertexBytes:vertices length:sizeof(MyVertex) * 3 atIndex:MyVertexInputIndexVertices];
-        //画三角形
-        [commandEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
+        [commandEncoder setVertexBuffer:_vertexBuffer offset:0 atIndex:0];
+        //传递纹理
+        [commandEncoder setFragmentTexture:_texture atIndex:0];
+        //画矩形
+        [commandEncoder drawPrimitives:MTLPrimitiveTypeTriangleStrip vertexStart:0 vertexCount:4];
         
         
         //当当前 Command Encoder 配置完毕，调用 endEncoding
@@ -154,6 +199,36 @@
         [commandBuffer commit];
     }
 }
+
+
+/**
+ 使用UIImage来创建 MTLTexture 纹理对象
+ */
+- (id<MTLTexture>) newTextureWithImage:(UIImage*) image {
+    CGImageRef imageRef = image.CGImage;
+    CGFloat width = image.size.width;
+    CGFloat height = image.size.height;
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    unsigned char* imageData = (unsigned char *) malloc(4 * width * height);
+    CGContextRef bitmapContext = CGBitmapContextCreate(imageData,
+                                            width,
+                                            height,
+                                            8,
+                                            width*4,
+                                            colorSpace,
+                                            kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    CGColorSpaceRelease(colorSpace);
+    CGContextDrawImage( bitmapContext, CGRectMake(0, 0, (CGFloat)width, (CGFloat)height), imageRef );
+    CGContextRelease(bitmapContext);
+    
+    MTLTextureDescriptor* textureDescriptor = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA8Unorm width:width height:height mipmapped:NO];
+    id <MTLTexture> texture = [_device newTextureWithDescriptor:textureDescriptor];
+    MTLRegion region = MTLRegionMake2D(0, 0, width, height);
+    [texture replaceRegion:region mipmapLevel:0 withBytes:imageData bytesPerRow:width*4];
+    free(imageData);
+    return texture;
+}
+
 
 /*
 // Only override drawRect: if you perform custom drawing.
