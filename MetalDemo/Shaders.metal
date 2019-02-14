@@ -9,32 +9,19 @@
 #include <metal_stdlib>
 using namespace metal;
 
-#import "MyShaderTypes.h"
-
-typedef struct
-{
-    float4 position [[position]];
-    float4 color;
-} RasterizerData;
-
 
 /**
  顶点着色器
  */
-vertex RasterizerData vertexShader(constant MyVertex *vertices [[buffer(MyVertexInputIndexVertices)]],
+vertex float4 vertexShader(constant float2 *vertices,
                                    uint vid [[vertex_id]]) {
-    RasterizerData outVertex;
-    
-    outVertex.position = vector_float4(vertices[vid].position, 0.0, 1.0);
-    outVertex.color = vertices[vid].color;
-    
-    return outVertex;
+    return vector_float4(vertices[vid], 0.0, 1.0);
 }
 
 
 /**
  片段着色器
  */
-fragment float4 fragmentShader(RasterizerData inVertex [[stage_in]]) {
-    return inVertex.color;
+fragment float4 fragmentShader(float4 inVertex [[stage_in]]) {
+    return vector_float4(0.9, 0.5, 0.1, 1.0);
 }

@@ -8,7 +8,7 @@
 
 #import "MyMetalView.h"
 #import <Metal/Metal.h>
-#import "MyShaderTypes.h"
+#include <simd/simd.h>
 
 @interface MyMetalView ()
 
@@ -134,14 +134,14 @@
         [commandEncoder setRenderPipelineState:_pipelineState];
         
         //三角形顶点
-        MyVertex vertices[3] = {
-            {.position = vector2(0.5f, -0.5f),  .color = vector4(1.0f, 0.0f, 0.0f, 1.0f)},
-            {.position = vector2(-0.5f, -0.5f), .color = vector4(0.0f, 1.0f, 0.0f, 1.0f)},
-            {.position = vector2(0.0f, 0.5f),   .color = vector4(0.0f, 0.0f, 1.0f, 1.0f)}
+        simd_float2 vertices[3] = {
+            vector2(0.5f, -0.5f),
+            vector2(-0.5f, -0.5f),
+            vector2(0.0f, 0.5f)
         };
         
         //传递顶点数据
-        [commandEncoder setVertexBytes:vertices length:sizeof(MyVertex) * 3 atIndex:MyVertexInputIndexVertices];
+        [commandEncoder setVertexBytes:vertices length:sizeof(simd_float2) * 3 atIndex:0];
         //画三角形
         [commandEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
         
